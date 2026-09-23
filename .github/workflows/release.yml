@@ -1,0 +1,40 @@
+name: Release Kantine Bar
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "app/**"
+      - ".github/workflows/release.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set build number
+        run: plutil -replace CFBundleVersion -string "${{ github.run_number }}" app/Resources/Info.plist
+
+      - name: Build
+        run: make -C app zip
+
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          version=$(plutil -extract CFBundleShortVersionString raw app/Resources/Info.plist)
+          build=${{ github.run_number }}
+          gh release create "v$version-$build" app/build/KantineBar.zip \
+            --target "$GITHUB_SHA" \
+            --title "Kantine Bar $version (build $build)" \
+            --notes "Install or update: \`curl -fsSL https://raw.githubusercontent.com/${{ github.repository }}/main/install.sh | sh\`" \
+            --latest

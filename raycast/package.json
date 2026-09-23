@@ -1,0 +1,39 @@
+{
+  "$schema": "https://www.raycast.com/schemas/extension.json",
+  "name": "mcb-kantine",
+  "title": "MCB Kantine",
+  "description": "Today's menu in the MCB canteen",
+  "icon": "icon.png",
+  "author": "tv2-thomas",
+  "categories": [
+    "Productivity"
+  ],
+  "license": "MIT",
+  "commands": [
+    {
+      "name": "menu",
+      "title": "Kantine Menu",
+      "subtitle": "MCB Kantine",
+      "description": "Show the canteen menu for today or another day",
+      "mode": "view"
+    }
+  ],
+  "scripts": {
+    "build": "ray build",
+    "dev": "ray develop",
+    "lint": "ray lint",
+    "fix-lint": "ray lint --fix"
+  },
+  "dependencies": {
+    "@raycast/api": "^2.4.1",
+    "@raycast/utils": "^2.3.1"
+  },
+  "devDependencies": {
+    "@raycast/eslint-config": "^2.2.0",
+    "@types/node": "^26.6.2",
+    "@types/react": "^19.3.0",
+    "eslint": "^9.39.5",
+    "prettier": "^3.9.9",
+    "typescript": "^6.0.3"
+  }
+}
