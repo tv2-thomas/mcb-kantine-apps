@@ -6,6 +6,7 @@ import SwiftUI
 final class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate {
     private let store = MenuStore()
     private var hotKeys: HotKeySettings!
+    private var lunchNudge: LunchNudge!
     private var statusItem: NSStatusItem!
     private let popover = NSPopover()
     private var refreshTimer: Timer?
@@ -22,6 +23,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate {
         }
 
         hotKeys = HotKeySettings { [weak self] in self?.togglePopover() }
+        lunchNudge = LunchNudge(anchor: { [weak self] in self?.statusItem.button?.window?.frame }) { [weak self] in
+            self?.showPopover()
+        }
 
         let host = NSHostingController(rootView: PopoverView(store: store, hotKeys: hotKeys))
         host.sizingOptions = .preferredContentSize
@@ -38,6 +42,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate {
 
     func application(_ application: NSApplication, open urls: [URL]) {
         for url in urls where url.scheme == "kantinebar" {
+            if url.host == "lunch" {
+                lunchNudge.show()
+                continue
+            }
             let day = URLComponents(url: url, resolvingAgainstBaseURL: false)?
                 .queryItems?.first { $0.name == "day" }?.value
             if let day { store.select(day) }

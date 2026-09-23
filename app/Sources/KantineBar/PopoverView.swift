@@ -200,6 +200,8 @@ private struct FooterBar: View {
     let store: MenuStore
     let hotKeys: HotKeySettings
     @State private var launchAtLogin = SMAppService.mainApp.status == .enabled
+    @AppStorage(LunchNudge.enabledKey) private var lunchNudge = true
+    @AppStorage(LunchNudge.minuteOfDayKey) private var lunchMinuteOfDay = LunchNudge.defaultMinuteOfDay
 
     var body: some View {
         HStack(spacing: 14) {
@@ -224,6 +226,14 @@ private struct FooterBar: View {
                     }
                 }
                 Divider()
+                Menu("Lunsjpåminnelse: \(lunchNudge ? LunchNudge.format(lunchMinuteOfDay) : "av")") {
+                    Toggle("På", isOn: $lunchNudge)
+                    Picker("Tidspunkt", selection: $lunchMinuteOfDay) {
+                        ForEach(LunchNudge.choices, id: \.self) { Text(LunchNudge.format($0)).tag($0) }
+                    }
+                    .pickerStyle(.inline)
+                    .disabled(!lunchNudge)
+                }
                 Toggle("Start ved innlogging", isOn: $launchAtLogin)
                 Divider()
                 Button("Avslutt Kantine Bar") { NSApp.terminate(nil) }
