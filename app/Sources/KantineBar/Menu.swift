@@ -43,6 +43,7 @@ private struct MealDTO: Decodable {
     let kcal: Int?
 }
 
+@MainActor
 enum MenuAPI {
     static let site = URL(string: "https://cozy-shortbread-2866c8.netlify.app/")!
     static let endpoint = site.appending(path: "api")
